@@ -31,3 +31,39 @@ kops get cluster
 kops validate cluster <cluster name>
 
 kubectl get nodes
+
+kops export kubeconfig --admin
+
+ kubectl run test --image=nginx:latest --port 80
+
+kubectl get pod
+alias k=kubectl
+k get pod
+k get pod -o wide
+k get nodes
+k describe pod test
+
+
+ vi mypod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-pod
+spec:
+  containers:
+  - name: nginx-container
+    image: nginx
+
+
+k create -f mypod.yaml
+kubectl get pod
+alias k=kubectl
+k get pod
+k get pod -o wide
+k get nodes
+k describe pod test
+
+kubectl api-resources
+k get po -n kube-system
+k delete pod nginx-pod
+k delete pod test
