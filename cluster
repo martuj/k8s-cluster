@@ -33,6 +33,7 @@ kops validate cluster <cluster name>
 kubectl get nodes
 
 kops export kubeconfig --admin
+// export KOPS_STATE_STORE=s3://
 
  kubectl run test --image=nginx:latest --port 80
 
