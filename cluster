@@ -792,3 +792,85 @@ curl 'http://localhost:80/app.txt'
  exit
 kubectl delete pod pod-sidecar -n dev
 
+HELM
+==============
+
+Lab: 1 Install Helm in kubernetes Cluster 
+===========================================
+
+wget https://get.helm.sh/helm-v3.5.0-rc.2-linux-amd64.tar.gz
+
+tar -xzvf  helm-v3.5.0-rc.2-linux-amd64.tar.gz
+
+sudo mv linux-amd64/helm /bin
+
+helm version
+
+
+Helm Commands 
+# this will print helm help
+helm
+
+# to see all available package in hub
+helm search hub
+
+# to list mysql or nginx charts
+helm search hub mysql 
+
+# to list all available repo
+helm repo list
+
+# add helm repo named bitnami
+helm repo add bitnami https://charts.bitnami.com/bitnami
+
+# search bitnami named repo in server
+helm search repo bitnami
+
+#update repo
+helm repo update
+
+# Search chart in specific repo
+helm search repo bitnami/nginx
+helm search repo nginx --versions
+
+
+# To remove the repo
+helm repo remove bitnami
+helm repo list
+
+
+# add again helm repo named bitnami
+helm repo add bitnami https://charts.bitnami.com/bitnami
+
+
+# install nginx using chart 
+helm install mywebserver bitnami/nginx
+
+# install in specific namesape then first create name space then install 
+kubectl create ns dev
+helm install -n dev  mywebserver bitnami/nginx
+# helm show default name space by default
+helm list
+# to check in the specific name space
+helm list -n dev
+
+# delete nginx
+helm uninstall mywebserver
+
+# delete from specific name space
+helm uninstall mywebserver -n dev
+helm list -n dev
+helm list
+kubectl get pod
+
+
+# update the repo 
+helm install mywebserver bitnami/nginx
+helm list
+helm repo update
+helm list
+helm status mywebserver
+helm upgrade mywebserver bitnami/nginx		# --reuse-values
+helm status mywebserver
+helm list
+
