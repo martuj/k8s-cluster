@@ -874,3 +874,33 @@ helm upgrade mywebserver bitnami/nginx		# --reuse-values
 helm status mywebserver
 helm list
 
+Lab: 2 Chart Structure
+====================================
+
+sudo apt update && sudo apt install tree -y
+
+helm create <Chart-Name>	#mychart
+
+
+controlplane $ tree mychart/
+mychart/
+|-- Chart.yaml
+|-- charts
+|-- templates
+|   |-- NOTES.txt
+|   |-- _helpers.tpl
+|   |-- deployment.yaml
+|   |-- hpa.yaml
+|   |-- ingress.yaml
+|   |-- service.yaml
+|   |-- serviceaccount.yaml
+|   `-- tests
+|       `-- test-connection.yaml
+`-- values.yaml
+
+
+Dry- Run
+helm install --debug --dry-run mychart ./mychart/
+helm install mychart ./mychart/
+helm get manifest mychart
+
