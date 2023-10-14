@@ -508,6 +508,46 @@ kubectl get pods
 =============================================================
 Lab 5: Persistent Volume in Kubernetes
 =============================================================
+Volumes
+-------------------
+EmptyDir
+------------------
+
+vi emptydir.yaml
+
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: test-pod
+  name: test-pod
+spec:
+  volumes:
+  - name: volume-1
+    emptyDir: {}                # /var/lib/kubelet under this stores the data uder node where the pod is creating
+  containers:
+  - image: nginx
+    name: ng-ctr
+    ports:
+    - containerPort: 80
+    volumeMounts:
+    - name: volume-1
+      mountPath: /app
+
+save the file
+
+kubectl get pods
+kubectl get pods -o wide
+#Go insdie the pod and create file in the /app dir
+kubectl exec -it test-pod  -- bash
+cd /app
+touch f1 f2
+ls
+exit
+# now you are back to kops server
+kubectl delete pod test-pod
+kubectl get pod
+
 
 ----------------------------------------------------------------------------
 # Task 1  Get Node Label and Create Custom Index.html on Node
