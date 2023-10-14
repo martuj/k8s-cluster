@@ -548,7 +548,77 @@ exit
 kubectl delete pod test-pod
 kubectl get pod
 
+HostPath
+=================
+# Create file
+vi  nginxpod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: ws
+  name: host-pod
+spec:
+  nodeName: i-006f490d250f417ca
+  volumes:
+  - name: hostpath-volume
+    hostPath:
+      path: /pvdir
+  containers:
+  - image: nginx
+    name: ng-ctr
+    ports:
+    - containerPort: 80
+    volumeMounts:
+    - name: hostpath-volume
+      mountPath: /usr/share/nginx/html/
+save the file
 
+ kubectl create -f nginxpod.yaml
+ k get pod
+ kubectl expose pod host-pod --port 80 --type NodePort --name host-svc
+ k get svc
+ kubectl describe svc
+ # take node ip and port no to access the website
+
+#Create another pod to access the same volume
+--------------------------------------------------
+vi httppod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: httpd
+  name: httpd-pod
+spec:
+  nodeName: i-006f490d250f417ca
+  volumes:
+  - name: httpd-volume
+    hostPath:
+      path: /pvdir
+  containers:
+  - image: httpd
+    name: httpd-ctr
+    ports:
+    - containerPort: 80
+    volumeMounts:
+    - name: httpd-volume
+      mountPath: /usr/local/apache2/htdocs/
+
+save the file
+ kubectl create -f httppod.yaml
+ kubectl get pod
+ kubectl exec -it httpd-pod  -- bash
+ ls 
+ cd htdocs
+ cat index.html
+
+# you can see the same data in the file
+exit
+kubectl get pod
+kubectl delete pod  host-pod
+kubectl delete pod httpd-pod
+kubectl get pod
 ----------------------------------------------------------------------------
 # Task 1  Get Node Label and Create Custom Index.html on Node
 ----------------------------------------------------------------------------
