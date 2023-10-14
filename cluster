@@ -535,7 +535,7 @@ spec:
       mountPath: /app
 
 save the file
-
+kubectl create -f emptydir.yaml
 kubectl get pods
 kubectl get pods -o wide
 #Go insdie the pod and create file in the /app dir
