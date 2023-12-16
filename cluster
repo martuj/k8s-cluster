@@ -1,4 +1,4 @@
-Kubernetes Essentials
+Kubernetes 
 =============================================================
 Lab 1: Kubernetes Operations(kops) on AWS
 =============================================================
@@ -792,6 +792,9 @@ apt update && apt install curl -y
 curl 'http://localhost:80/app.txt'
  exit
 kubectl delete pod pod-sidecar -n dev
+
+
+
 
 HELM
 ==============
