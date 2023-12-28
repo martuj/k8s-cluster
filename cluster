@@ -38,6 +38,10 @@ kubectl get nodes
 kops export kubeconfig --admin
 // export KOPS_STATE_STORE=s3://
 
+LAB-2 creating pod
+================================
+Task-1  Imperative method
+----------
  kubectl run test --image=nginx:latest --port 80
 
 kubectl get pod
@@ -47,7 +51,8 @@ k get pod -o wide
 k get nodes
 k describe pod test
 
-
+task-2 declarative method
+-----------------------------
  vi mypod.yaml
 apiVersion: v1
 kind: Pod
@@ -73,8 +78,8 @@ k delete pod nginx-pod
 k delete pod test
 
 ===============================================
-ReplicaSet
-
+Task-3 ReplicaSet
+----------------------------
 vi nginx-rs.yaml 
 
 apiVersion: apps/v1
