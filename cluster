@@ -70,12 +70,12 @@ alias k=kubectl
 k get pod
 k get pod -o wide
 k get nodes
-k describe pod test
+k describe pod nginx-pod
 
 kubectl api-resources
 k get po -n kube-system
 k delete pod nginx-pod
-k delete pod test
+k delete pod nginx-pod
 
 ===============================================
 Task-3 ReplicaSet
