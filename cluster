@@ -263,7 +263,7 @@ kubectl get pods
 kubectl delete -f dep-nginx.yaml
 
 =============================================================
-Lab 2: Services in Kubernetes
+Lab 4: Services in Kubernetes
 =============================================================
 ---------------------------------------------------------------
 # Task 1 Create a pod using below yaml
@@ -463,7 +463,7 @@ kubectl delete -f httpd-pod.yaml
 kubectl delete -f httpd-svc.yaml
 ==========================================================
 =============================================================
-Lab 4: DaemonSet in Kubernetes
+Lab 5: DaemonSet in Kubernetes
 =============================================================
 
 #Create a DaemonSet using below yaml
@@ -514,11 +514,11 @@ kubectl get pods
 
 
 =============================================================
-Lab 5: Persistent Volume in Kubernetes
+Lab 6: Persistent Volume in Kubernetes
 =============================================================
 Volumes
 -------------------
-EmptyDir
+Task:1-EmptyDir
 ------------------
 
 vi emptydir.yaml
@@ -556,7 +556,7 @@ exit
 kubectl delete pod test-pod
 kubectl get pod
 
-HostPath
+Task:2-HostPath
 =================
 # Create file
 vi  nginxpod.yaml
@@ -653,7 +653,7 @@ echo Hello World! > /pvdir/index.html
 
 
 --------------------------------------------------------------------------------
-# Task 2 - Create a Local Persistent Volume
+# Task 3 - Create a Local Persistent Volume
 --------------------------------------------------------------------------------
 
 vi pv-volume.yaml
@@ -681,7 +681,7 @@ kubectl get pv
 kubectl describe pv pv-volume
 
 ------------------------------------------------------------------------------------
-# Task 3  - Create a PV Claim
+# Task 4  - Create a PV Claim
 ------------------------------------------------------------------------------------
 vi pv-claim.yaml
 
@@ -700,7 +700,7 @@ spec:
 
 kubectl apply -f pv-claim.yaml
 ----------------------------------------------------------------------------------------
-# Task 4  - Create nginx Pod with NodeSelector
+# Task 5  - Create nginx Pod with NodeSelector
 ----------------------------------------------------------------------------------------
 vi pv-pod.yaml
 
@@ -751,344 +751,7 @@ kubectl delete -f pv-claim.yaml
 kubectl delete -f pv-volume.yaml
 =============================================================
 ---------------------------------------------
-Creating a Namespace
--------------------------------------------------
-kubectl create namespace dev
-kubectl get ns
-kubectl describe ns dev
-===========================
-sidecar container
-============================
-Lab 2: Sidecar container and Patterns
 
-Task: 1 sidecar container
-
-vi sidecar.yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: pod-sidecar
-spec:
-  containers:
-  - name: app-container
-    image: ubuntu:latest
-    command: ["/bin/sh"]
-    args: ["-c","while true; do date >> /var/log/app.txt; sleep 5; done"]
-    volumeMounts:
-    - name: share-logs
-      mountPath: /var/log/
-  - name: sidecar-container
-    image: nginx:latest
-    ports:
-    - containerPort: 80
-    volumeMounts:
-    - name: share-logs
-      mountPath: /usr/share/nginx/html
-  volumes:
-  - name: share-logs
-    emptyDir: {}
-
-	save the file
-kubectl create -f sidecar.yaml -n dev
-kubectl get pod -n dev
-
-kubectl -n dev exec -it pod-sidecar -c sidecar-container -- bash
-# install curl
-apt update && apt install curl -y
- 
-curl 'http://localhost:80/app.txt'
- exit
-kubectl delete pod pod-sidecar -n dev
-
-
-
-
-HELM
-==============
-
-Lab: 1 Install Helm in kubernetes Cluster 
-===========================================
-
-wget https://get.helm.sh/helm-v3.5.0-rc.2-linux-amd64.tar.gz
-
-tar -xzvf  helm-v3.5.0-rc.2-linux-amd64.tar.gz
-
-sudo mv linux-amd64/helm /bin
-
-helm version
-
-
-Helm Commands 
-# this will print helm help
-helm
-
-# to see all available package in hub
-helm search hub
-
-# to list mysql or nginx charts
-helm search hub mysql 
-
-# to list all available repo
-helm repo list
-
-# add helm repo named bitnami
-helm repo add bitnami https://charts.bitnami.com/bitnami
-
-# search bitnami named repo in server
-helm search repo bitnami
-
-#update repo
-helm repo update
-
-# Search chart in specific repo
-helm search repo bitnami/nginx
-helm search repo nginx --versions
-
-
-# To remove the repo
-helm repo remove bitnami
-helm repo list
-
-
-# add again helm repo named bitnami
-helm repo add bitnami https://charts.bitnami.com/bitnami
-
-
-# install nginx using chart 
-helm install mywebserver bitnami/nginx
-
-# install in specific namesape then first create name space then install 
-kubectl create ns dev
-helm install -n dev  mywebserver bitnami/nginx
-# helm show default name space by default
-helm list
-# to check in the specific name space
-helm list -n dev
-
-# delete nginx
-helm uninstall mywebserver
-
-# delete from specific name space
-helm uninstall mywebserver -n dev
-helm list -n dev
-helm list
-kubectl get pod
-
-
-# update the repo 
-helm install mywebserver bitnami/nginx
-helm list
-helm repo update
-helm list
-helm status mywebserver
-helm upgrade mywebserver bitnami/nginx		# --reuse-values
-helm status mywebserver
-helm list
-
-Lab: 2 Chart Structure
-====================================
-
-sudo apt update && sudo apt install tree -y
-
-helm create <Chart-Name>	#mychart
-
-
-controlplane $ tree mychart/
-mychart/
-|-- Chart.yaml
-|-- charts
-|-- templates
-|   |-- NOTES.txt
-|   |-- _helpers.tpl
-|   |-- deployment.yaml
-|   |-- hpa.yaml
-|   |-- ingress.yaml
-|   |-- service.yaml
-|   |-- serviceaccount.yaml
-|   `-- tests
-|       `-- test-connection.yaml
-`-- values.yaml
-
-
-Dry- Run
-helm install --debug --dry-run mychart ./mychart/
-helm install mychart ./mychart/
-helm get manifest mychart
-
-Lab: 3 Create Custom Chart 
-==========================
-
-mkdir -p myapp/charts && mkdir -p myapp/templates
-
-cd myapp
-
-vi Chart.yaml 
-apiVersion: v2
-name: mychart
-description: A Helm chart for Kubernetes
-type: application
-version: 0.1.0
-appVersion: "1.16.0"
-
-
-#create empty file
-touch values.yaml 
- 
-
-vi templates/deployment.yaml 
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: mydep
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: myapp
-  template:
-    metadata:
-      labels:
-        app: myapp
-    spec:
-      containers:
-      - image: nginx
-        name: nginx
-        ports:
-        - containerPort: 80
-
-
-
-vi templates/service.yaml 
-apiVersion: v1
-kind: Service
-metadata:
-  name: myapp-svc
-spec:
-  selector:
-    app: myapp
-  ports:
-  - protocol: TCP
-    port: 80
-  type: NodePort 
-
-
-
-$ tree
-.
-|-- Chart.yaml
-|-- charts
-|-- templates
-|   |-- deployment.yaml
-|   `-- service.yaml
-`-- values.yaml
-
-#type cd to comeout from the dir
-cd
-helm install mychart1 ./myapp
-kubectl get deployment 
-kubectl get pods
-
-helm uninstall mychart1
-
-
-
-Lab: 4  Create custom template
-=========================
-
-mkdir -p myapp1/charts && mkdir -p myapp1/templates
-
-cd myapp1
-
-vi Chart.yaml 
-apiVersion: v2
-name: mychart
-description: A Helm chart for Kubernetes
-type: application
-version: 0.1.0
-appVersion: "1.16.0"
-
-
-
-vi values.yaml 
-replicaCount: 1
-app:
-  name: myapp
-  image: nginx
-  ports:
-    containerPort: 80
-
-
-
-vi templates/deployment.yaml 
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: {{ .Release.Name }}
-spec:
-  replicas: {{ .Values.replicaCount }}
-  selector:
-    matchLabels:
-      {{- include "myapp.applabels" . | nindent 7 }}
-  template:
-    metadata:
-      labels:
-        {{- include "myapp.applabels" . | nindent 9 }}
-    spec:
-      containers:
-      - image: {{ .Values.app.image }}
-        name: {{ .Values.app.name }}
-        ports:
-        - containerPort: {{ .Values.app.ports.containerPort }}
-
-
-vi templates/service.yaml 
-apiVersion: v1
-kind: Service
-metadata:
-  name: myapp-svc
-spec:
-  selector:
-    app: myapp
-  ports:
-  - protocol: TCP
-    port: 80
-  type: NodePort 
-
-
-
-
-vi templates/_helpers.tpl 
-{{- define "myapp.applabels" -}}
-app: myapp
-{{- end }} 
-
-
-
-vi templates/NOTES.txt  
-Thank you for support {{ .Chart.Name }}.
-  
- Your release is named {{ .Release.Name }}.
-
- To learn more about the release, try:
-
-   $ helm status {{ .Release.Name }}
-   $ helm get all {{ .Release.Name }}
-   $ helm uninstall {{ .Release.Name }}
-
-
-
-
-
-$ tree
-.
-|-- Chart.yaml
-|-- charts
-|-- templates
-|   |-- deployment.yaml
-|   `-- service.yaml
-`-- values.yaml
-
-#come out from dir
 cd 
 helm install mychart2 ./myapp
 
