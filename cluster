@@ -752,8 +752,4 @@ kubectl delete -f pv-volume.yaml
 =============================================================
 ---------------------------------------------
 
-cd 
-helm install mychart2 ./myapp
-
-helm uninstall mychart2
 
