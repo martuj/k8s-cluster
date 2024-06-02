@@ -22,7 +22,11 @@ sudo hostnamectl set-hostname kops
 
 bash
 
-wget https://kops-script.s3.amazonaws.com/kops-v1.25.sh
+wget https://kops-script.s3.amazonaws.com/kops-v1.25.sh 
+OR create file  vi kops-v1.25.sh  and copy the entire content from the kops-file which is present in the same link.
+
+save the file :wq and run the command chmod 400 kops-v1.25.sh 
+
 . ./kops-v1.25.sh
 
 kops get cluster
