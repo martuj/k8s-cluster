@@ -38,6 +38,10 @@ kubectl get nodes
 kops export kubeconfig --admin
 // export KOPS_STATE_STORE=s3://
 
+#For delete your entire cluster 
+=====================================
+example:  kops delete cluster --name=martuj-m1-k8s-2024-06-02-03-06.k8s.local --yes
+
 LAB-2 creating pod
 ================================
 Task-1  Imperative method
