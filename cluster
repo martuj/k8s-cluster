@@ -23,6 +23,7 @@ sudo hostnamectl set-hostname kops
 bash
 
 wget https://kops-script.s3.amazonaws.com/kops-v1.25.sh 
+wget https://martuj-k8sv1-31.s3.us-east-1.amazonaws.com/kops.sh.txt
 OR create file  vi kops-v1.25.sh  and copy the entire content from the kops-file which is present in the same link.
 
 save the file :wq and run the command chmod 400 kops-v1.25.sh 
